@@ -6,6 +6,10 @@
 			"name" : "Jakob Murko",
 			"email" : "jakob@databox.com",
 			"homepage" : "http://databox.com"
+		},
+		{
+			"name" : "Uros Majeric",
+			"email" : "uros@majeric.si"
 		}
 	],
 	"homepage" : "http://github.com/databox/php-sdk",
