@@ -11,16 +11,10 @@ return array(
     'operations' => array(
         'SetPushData' => array(
             'httpMethod' => 'POST',
-            'uri' => 'source/{uniqueUrl}/data',
+            'uri' => '',
             'summary' => 'Push data to your custom connection',
             'responseClass' => 'SetPushDataOutput',
             'parameters' => array(
-                'uniqueUrl' => array(
-                    'description' => 'The unique URL of your app',
-                    'type' => 'string',
-                    'location' => 'uri',
-                    'required' => true
-                ),
                 'payload' => array(
                     'description' => 'The actual data payload',
                     'type' => 'string',

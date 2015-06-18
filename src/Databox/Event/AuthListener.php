@@ -33,7 +33,7 @@ class AuthListener implements EventSubscriberInterface
             'request.before_send' => array('onRequestBeforeSend', -1000)
         );
     }
-    
+
     public function setApiKey($apiKey) {
         $this->apiKey = $apiKey;
     }
@@ -49,15 +49,15 @@ class AuthListener implements EventSubscriberInterface
      */
     public function onRequestBeforeSend(Event $event)
     {
-        $request = $event['request']; /* @var $request EntityEnclosingRequestInterface */
+        $request = $event['request'];
 
         if (!is_array($request->getHeader('Accept'))) {
             $request->setheader('Accept', 'application/json');
         }
         $header = $request->getHeader('Authorization');
         if (isset($this->apiKey) && empty($header)) {
-            $request->setAuth($this->apiKey, 'DataboxPHPSDK');
+            $request->setAuth($this->apiKey, '', 'Basic');
         }
-
+        $request->setHeader('Content-Type', 'application/json');
     }
 }

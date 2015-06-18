@@ -1,4 +1,5 @@
 <?php
+
 namespace Databox;
 
 use Guzzle\Service\Client;
@@ -13,13 +14,12 @@ use Guzzle\Service\Description\ServiceDescription;
  */
 class DataboxClient extends Client implements DataboxClientInterface
 {
+
     const DATABOX_API_BASEURL = 'https://api.databox.com';
 
     protected $userAgent = 'Databox-PHP-SDK/1.2';
 
     private $authListener;
-
-    private $uniqueUrl;
 
     private $userAccessToken;
 
@@ -54,10 +54,6 @@ class DataboxClient extends Client implements DataboxClientInterface
      */
     public function pushData(DataboxBuilder $dataProvider)
     {
-        if (is_null($this->uniqueUrl)) {
-            throw new \Exception("Push URL not provided.");
-        }
-
         if (is_null($this->authListener->getApiKey())) {
             throw new \Exception("Api key not set.");
         }
@@ -68,27 +64,33 @@ class DataboxClient extends Client implements DataboxClientInterface
             $responses = [];
             foreach ($payloads as $payload) {
                 $responses[] = $this->setPushData([
-                    'uniqueUrl' => $this->uniqueUrl,
                     'payload' => $payload
                 ]);
             }
             return $responses;
         } else {
             $payload = $dataProvider->getPayload();
-            /* if all data is provided then push the data */
-            return $this->setPushData([
-                'uniqueUrl' => $this->uniqueUrl,
-                'payload' => $payload
-            ]);
-        }
 
+            $request = $this->post($this->getBaseUrl(), [
+                'Content-Type' => 'application/json'
+            ], $payload);
+
+            $response = $request->send();
+            if ($response = (string) $response->getBody()) {
+                $response = json_decode($response, true);
+            }
+
+            return $response;
+        }
     }
 
     /**
      * OBSOLETE - will be removed in next release
      *
      * Sets the API key
-     * @param string $apiKey The API key to be set.
+     *
+     * @param string $apiKey
+     *            The API key to be set.
      */
     public function setApiKey($apiKey)
     {
@@ -96,42 +98,16 @@ class DataboxClient extends Client implements DataboxClientInterface
     }
 
     /**
-     * OBSOLETE - will be removed in next release
-     *
-     * Sets unique URL for push
-     * @param string $uniqueUrl Sets the unique URL.
-     */
-    public function setUniqueUrl($uniqueUrl)
-    {
-        $this->uniqueUrl = $uniqueUrl;
-    }
-
-    /**
-     * Set source token
-     *
-     * @param string $sourceToken Token of the custom source
-     */
-    public function setSourceToken($sourceToken)
-    {
-        $this->uniqueUrl = $sourceToken;
-    }
-
-    /**
      * Returns the push log
+     *
      * @return array Server response.
      */
     public function getPushLog()
     {
-        if (is_null($this->uniqueUrl)) {
-            throw new \Exception("Push URL not provided.");
-        }
-
         if (is_null($this->authListener->getApiKey())) {
             throw new \Exception("Api key not set.");
         }
 
-        return $this->getPushDataLog([
-            'uniqueUrl' => $this->uniqueUrl
-        ]);
+        return $this->getPushDataLog([]);
     }
 }
