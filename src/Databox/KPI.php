@@ -196,8 +196,12 @@ class KPI implements \JsonSerializable
     {
         $json = [];
         $json['$' . $this->key] = $this->value;
-        if (null !== $this->date && $this->date instanceof \DateTime) {
-            $json['date'] = $this->date->format(self::DATE_FORMAT);
+        if (null !== $this->date) {
+            if (($this->date instanceof \DateTime)) {
+                $json['date'] = $this->date->format(self::DATE_FORMAT);
+            } else {
+                $json['date'] = $this->date;
+            }
         }
         if (null !== $this->attributes) {
             foreach ($this->attributes as $attribute => $attributeValue) {

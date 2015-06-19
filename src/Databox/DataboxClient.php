@@ -72,10 +72,11 @@ class DataboxClient extends Client implements DataboxClientInterface
             $payload = $dataProvider->getPayload();
 
             $request = $this->post($this->getBaseUrl(), [
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
+                'Connection' => 'Close'
             ], $payload);
 
-            $response = $request->send();
+            $response = $this->send($request);
             if ($response = (string) $response->getBody()) {
                 $response = json_decode($response, true);
             }
