@@ -86,6 +86,22 @@ class DataboxClient extends Client implements DataboxClientInterface
     }
 
     /**
+     * (non-PHPdoc)
+     *
+     * @see \Databox\Client\DataboxClientInterface::clearRemoteData()
+     */
+    public function clearRemoteData()
+    {
+        $request = $this->delete($this->getBaseUrl() . '/data', [
+            'Content-Type' => 'application/json',
+            'Connection' => 'Close'
+        ]);
+
+        $response = $this->send($request);
+        return $response;
+    }
+
+    /**
      * OBSOLETE - will be removed in next release
      *
      * Sets the API key
